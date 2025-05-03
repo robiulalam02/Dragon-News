@@ -1,7 +1,43 @@
-import React from 'react';
-import { Link } from 'react-router';
+
+import { use, useState } from 'react';
+import { Link, useNavigate } from 'react-router';
+import swal from 'sweetalert';
+import { ProviderContext } from '../../Provider/ProviderContext';
+import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa';
+
 
 const Login = () => {
+
+    const navigate = useNavigate();
+    const { signInUser } = use(ProviderContext);
+    const [showPass, setShowPass] = useState(false)
+
+    const handleSignIn = (e) => {
+        e.preventDefault();
+
+        const email = e.target.email.value;
+        const password = e.target.password.value;
+
+        signInUser(email, password)
+            .then(result => {
+                console.log(result);
+                swal({
+                    title: "Welcome Back!",
+                    text: "User Login Successful!",
+                    icon: "success",
+                  });
+                navigate('/')
+            })
+            .catch(() => {
+                swal({
+                    title: "Failed!",
+                    text: "Invalid Email or Password!",
+                    icon: "error",
+                  });
+            })
+
+    }
+
     return (
         <div className='max-w-screen-xl mx-auto flex justify-center h-dvh items-center'>
             <div className="flex flex-col w-full md:w-4/12 p-6 shadow-md rounded-xl sm:p-10 dark:bg-gray-50 dark:text-gray-800 border border-base-300">
@@ -9,23 +45,29 @@ const Login = () => {
                     <h1 className="my-3 text-4xl font-bold">Sign in</h1>
                     <p className="text-sm dark:text-gray-600">Sign in to access your account</p>
                 </div>
-                <form noValidate="" action="" className="space-y-12">
+                <form onSubmit={handleSignIn} className="space-y-12">
                     <div className="space-y-4">
                         <div>
                             <label htmlFor="email" className="block mb-2 text-sm">Email address</label>
                             <input type="email" name="email" id="email" placeholder="leroy@jenkins.com" className="w-full px-3 py-2 border rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800" />
+
                         </div>
-                        <div>
+                        <div className='relative'>
                             <div className="flex justify-between mb-2">
                                 <label htmlFor="password" className="text-sm">Password</label>
                                 <a rel="noopener noreferrer" href="#" className="text-xs hover:underline dark:text-gray-600">Forgot password?</a>
                             </div>
-                            <input type="password" name="password" id="password" placeholder="*****" className="w-full px-3 py-2 border rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800" />
+                            <input type={showPass ? 'text' : 'password'} name="password" id="password" placeholder="*****" className="w-full px-3 py-2 border rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800" />
+                            <button type='button' onClick={()=>setShowPass(!showPass)} className='absolute right-5 bottom-3'>
+                                {
+                                    showPass ? <FaRegEye /> : <FaRegEyeSlash />
+                                }
+                            </button>
                         </div>
                     </div>
                     <div className="space-y-2">
                         <div>
-                            <button type="button" className="w-full px-8 py-3 font-semibold rounded-md dark:bg-violet-600 dark:text-gray-50">Sign in</button>
+                            <button type="submit" className="w-full px-8 py-3 font-semibold rounded-md dark:bg-violet-600 dark:text-gray-50">Sign in</button>
                         </div>
                         <p className="px-6 text-sm text-center dark:text-gray-600">Don't have an account yet?
                             <Link to="/auth/register" rel="noopener noreferrer" href="" className="hover:underline dark:text-violet-600 text-secondary">Sign up</Link>.

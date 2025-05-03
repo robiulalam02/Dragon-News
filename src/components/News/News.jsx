@@ -5,9 +5,7 @@ import { NavLink } from 'react-router';
 
 const News = ({ item }) => {
 
-    const [isReadMore, setIsReadMore] = useState(false);
-
-    console.log(item);
+    const [isReadMore, setIsReadMore] = useState(false);    
 
     const fiveStarRating = <div className='flex items-center gap-2'>
         <MdOutlineStar color='#FFD700' size={20} />
